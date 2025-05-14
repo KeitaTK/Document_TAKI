@@ -1,6 +1,6 @@
 <img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
 
-# Pixhawk 6cとRaspberry pi 5をusb接続し、Pixhawk 6cから送られてくるMavlinkのデータをRaspberrypiで受信したい。
+# MavlinkのデータをRaspberrypiで受信
 
 Pixhawk 6CとRaspberry Pi 5をUSBケーブルで接続し、Pixhawkから送られてくるMAVLinkデータをRaspberry Piで受信するには、以下の手順で実現できます。
 

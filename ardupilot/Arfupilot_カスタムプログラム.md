@@ -1,0 +1,156 @@
+<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
+
+# Ardupilot カスタムプログラムの追加およびコンパイル設定
+
+**ArduPilotカスタムモジュール統合ガイド**
+**正常ビルド設定と実装サマリ**
+
+---
+
+## **1. モジュール構造**
+
+### ディレクトリ構成
+
+- 以下のようにファイルを作成する
+```
+ardupilot/
+└── libraries/
+    └── AP_MyModule/
+        ├── AP_MyModule.h
+        ├── AP_MyModule.cpp
+        └── wscript
+```
+
+
+### 主要ファイル内容
+
+```cpp
+// AP_MyModule.h
+#pragma once
+#include <AP_HAL/AP_HAL.h>
+
+class AP_MyModule {  // ✅ クラス名が完全一致しているか確認
+public:
+    void init() const;  // ✅ const修飾子を追加
+    void update() const; // ✅ const修飾子を追加
+
+private:
+    int counter = 0;
+    const AP_HAL::HAL& hal = AP_HAL::get_HAL();  // ✅ const参照
+};
+```
+
+```cpp
+// AP_MyModule.cpp
+#include "AP_MyModule.h"
+#include <AP_HAL/AP_HAL.h>
+
+void AP_MyModule::init() const {  // ✅ クラス名とconst修飾子が一致
+    hal.console->printf("AP_MyModule initialized\n");
+}
+
+void AP_MyModule::update() const {  // ✅ クラス名とconst修飾子が一致
+    // 実装内容
+}
+```
+
+
+---
+
+## **2. ビルドシステム設定**
+
+### wscript設定
+
+```python
+# libraries/AP_MyModule/wscript
+def configure(cfg):
+    cfg.env.AP_LIBRARIES.append('AP_MyModule')
+    cfg.env.append_value('AP_MODULE_NAMES', 'AP_MyModule')
+
+def build(bld):
+    bld.ap_library(
+        name='AP_MyModule',
+        source=bld.srcnode.ant_glob('*.cpp'),
+        includes='.',
+        depends=[
+            'AP_HAL',
+            'AP_Vehicle',
+            'AP_Param',
+            'AP_Common',
+            'AP_Math'
+        ],
+        install_path='libraries/AP_MyModule',
+        cxxflags=['-Wno-unused-parameter']  # 必要に応じて警告抑制
+    )
+
+```
+
+
+### 上位wscript追記
+
+```python
+# ardupilot/wscript (約614行目)
+    cfg.recurse('libraries/AP_MyModule')
+```
+
+
+---
+
+## **3. スケジューラ統合**
+
+### Copter.h修正
+
+```cpp
+// 75行目に追加
+#include <AP_MyModule/AP_MyModule.h>
+```
+
+```cpp
+// 446行目に追加
+#endif // の後に
+
+    AP_MyModule my_module; 
+```
+
+```cpp
+// 586行目に追加
+public:
+    void failsafe_check();      // この後に追加
+    void my_module_update();
+```
+
+
+### Copter.cpp修正
+
+```cpp
+// ArduCopter/Copter.cpp
+// 205行目に追加
+    SCHED_TASK(takeoff_check,         50,     50,  91), // この後に追加
+    SCHED_TASK(my_module_update,      10,    100, 92),  // 10Hzで実行
+```
+
+```cpp
+// ArduCopter/Copter.cpp
+// 959行目に追加
+void Copter::my_module_update() {
+    my_module.update();
+}
+```
+
+
+---
+
+
+## **4. ビルド手順**
+
+```bash
+./waf clean
+./waf configure --board Pixhawk6C
+./waf copter
+```
+
+
+---
+
+<div style="text-align: center">⁂</div>
+
