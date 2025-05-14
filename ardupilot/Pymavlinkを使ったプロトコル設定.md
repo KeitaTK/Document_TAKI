@@ -23,7 +23,7 @@
   
 ### 実行手順
 1. コードをラズパイor PCで実行する。
-2. BLHeli_S ESCの場合は「BLHeliSuite」をPCにインストール
+2. BLHeli_S ESCの場合は「BLHeli Configurator」をPCにインストール
 3. ESC設定ソフトウェアを起動
 4. 接続インターフェイスとして「BLHeli32/AM32 Bootloader (Betaflight/Cleanflight)」を選択
 5. COMポートを選択して「Connect」→「Read Setup」をクリック
