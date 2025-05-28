@@ -1,6 +1,6 @@
 # ラズパイから位置情報を送信
 
-## Mavlinkメッセージの<message id="183" name="AUTOPILOT_VERSION_REQUEST">の構造解析
+## Mavlinkメッセージの "AUTOPILOT_VERSION_REQUEST" の構造解析
 
 1. ardupilotmega.xmlのAUTOPILOT_VERSION_REQUESTをラズパイから送る
 
@@ -119,3 +119,10 @@ void GCS_MAVLINK::send_autopilot_version() const
 #define AP_MAVLINK_AUTOPILOT_VERSION_REQUEST_ENABLED 1
 #endif
 ```
+
+
+# これを参考に新規カスタムMavlinkを追加
+
+1. まだ使用していないIDで.xml二メッセージを定義
+2. build/Pixhawk6C/libraries/GCS_MAVLink/include/mavlink/v2.0/ardupilotmega/などにファイルができたか確認
+3. 
