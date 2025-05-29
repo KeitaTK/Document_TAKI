@@ -18,7 +18,7 @@
 - 関数の呼び出し - 「いつ実行するか」を制御
 まず、AUTOPILOT_VERSION_REQUESTが受信されると、このコマンドが実行され、GCS_MAVLINK::handle_send_autopilot_version(msg)を呼び出す。
 ```bash
-423行目
+4302行目
 #if AP_MAVLINK_AUTOPILOT_VERSION_REQUEST_ENABLED
     case MAVLINK_MSG_ID_AUTOPILOT_VERSION_REQUEST:
         handle_send_autopilot_version(msg);
@@ -121,8 +121,39 @@ void GCS_MAVLINK::send_autopilot_version() const
 ```
 
 
-# これを参考に新規カスタムMavlinkを追加
+# これを参考に外部からpixhawk6cに新規カスタムMavlinkを追加してみる
 
-1. まだ使用していないIDで.xml二メッセージを定義
-2. build/Pixhawk6C/libraries/GCS_MAVLink/include/mavlink/v2.0/ardupilotmega/などにファイルができたか確認
-3. 
+1. まだ使用していないIDで.xmlにメッセージid="189" name="TAKI_CUSTOME1_REQUEST"を定義
+2. build/Pixhawk6C/libraries/GCS_MAVLink/include/mavlink/v2.0/ardupilotmega/（common）などにファイルができたか確認
+3. 関数を登録する
+   - 定期的に送信する場合には　ap_message.h
+   - リクエストに対して送信する場合は書かなくてよい
+4. GCS_Common.cppに受信した時に実行することを記述
+```bash
+#if AP_MAVLINK_AUTOPILOT_VERSION_REQUEST_ENABLED
+    case MAVLINK_MSG_ID_TAKI_CUSTOME1_REQUEST:
+        handle_send_autopilot_version(msg);
+        break;
+#endif
+```
+とりあえずここまでで、コンパイルして動くか確認。この場合TAKI_CUSTOME1_REQUESTを送るとautopilot_versionがかえって来るはず。
+送信するコマンドはpymavlink_TAKI_CUSTOME_REQUEST.py
+成功した。
+
+6. ビルド設定を追加する。
+   - GCS_config.hの中にコンパイルするか設定できる。1にすればコンパイル。0にすればコンパイルしない。
+```bash
+// enable custom TAKI_CUSTOME1_REQUEST handling
+#define AP_MAVLINK_TAKI_CUSTOME_REQUEST_ENABLED 1
+```
+   - コンパイル設定を追加したので4の1行目を変更
+```bash
+#if AP_MAVLINK_TAKI_CUSTOME_REQUEST_ENABLED
+    case MAVLINK_MSG_ID_TAKI_CUSTOME1_REQUEST:
+        handle_send_autopilot_version(msg);
+        break;
+#endif
+```
+
+1. カスタムメッセージの返信を追加する。
+   - 1と同様に　id="190" name="TAKI_CUSTOME1"　を定義

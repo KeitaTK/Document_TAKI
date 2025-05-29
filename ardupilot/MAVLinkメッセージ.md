@@ -24,33 +24,25 @@
 git clone -b Mavlink_UMEMOTO https://github.com/KeitaTK/mavlink.git --recursive
 ```
 
-2. 必要に応じて、以前のバージョンをアンインストールする。
-```bash    
+2. 必要に応じて、仮想環境内の以前のバージョンをアンインストールする。
+```bash
+source Mavlink_venv/bin/activate   
 pip uninstall pymavlink
-```
-強制的にする場合は
-
-```bosh
-python3 -m pip uninstall pymavlink --break-system-packages
-```
-3. 仮想環境の中でインストールを行う
-```bosh
-source Mavlink_venv/bin/activate
 ```
 抜けるときは
 ```bash 
 deactivate
 ```
 
-1. Pythonセットアップ プログラムを実行します。setup.pyの場所は随時確認すること。
+強制的にする場合は
+
+```bosh
+python3 -m pip uninstall pymavlink --break-system-packages
+```
+3. 仮想環境の中でインストールを行う
+Pythonセットアップ プログラムを実行する。setup.pyの場所は随時確認すること。
 ```bash 
 cd ~/mavlink/pymavlink 
 python setup.py install
 ```
 生成されたMAVLinkライブラリは、 pipを使用してインストールされたものと同じように使用できる。
-
-受信用のプログラムは　
-```bash    
-git clone https://github.com/KeitaTK/Mavlink_raspi.git
-```
-で自分のローカル環境にクローンして使用。
