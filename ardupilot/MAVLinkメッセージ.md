@@ -23,6 +23,11 @@
 ```bosh
 git clone -b Mavlink_UMEMOTO https://github.com/KeitaTK/mavlink.git --recursive
 ```
+2回目からは、
+```bosh
+cd ~/mavlink/
+git pull
+```
 
 2. 必要に応じて、仮想環境内の以前のバージョンをアンインストールする。
 ```bash
