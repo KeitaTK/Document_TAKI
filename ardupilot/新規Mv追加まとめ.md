@@ -1,5 +1,3 @@
-<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
-
 # ArduPilotカスタムMAVLinkメッセージ追加手順
 
 ArduPilotにカスタムMAVLinkメッセージを追加し、送受信を実装する手順を以下にまとめます。

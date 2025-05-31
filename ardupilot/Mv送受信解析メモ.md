@@ -266,25 +266,3 @@ void GCS_MAVLINK::handle_send_taki_custome1(const mavlink_message_t &msg)
 17. コンパイルを行い、TAKI_CUSTOME1_REQUESTを送信すると、カウントアップでの返答できた。
 
 
-# 上を基に、位置情報をラズパイから送信し、ardupilotで内部変数に格納
-graph TD
-    A[External GCS] -->|TAKI_CUSTOME1_REQUEST| B[MAVLink受信]
-    B --> C[GCS_Common.cpp<br/>メッセージ分岐処理]
-    C --> D{メッセージID判定}
-    D -->|ID: 189| E[handle_send_taki_custome1]
-    E --> F[send_message<br/>(MSG_TAKI_CUSTOME1)]
-    F --> G[送信キューに追加]
-    G --> H[GCS_Common.cpp<br/>送信処理分岐]
-    H --> I[send_taki_custome1]
-    I --> J[mavlink_msg_taki_custome1_send]
-    J --> K[MAVLink送信]
-    K -->|TAKI_CUSTOME1| L[External GCS]
-    
-    style A fill:#e1f5fe
-    style L fill:#e8f5e8
-    style E fill:#fff3e0
-    style I fill:#fff3e0
-
-
-
-
