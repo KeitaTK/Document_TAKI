@@ -73,6 +73,23 @@ ssh -T git@github.com
 ```
 Hi KeitaTK! You've successfully authenticated, but GitHub does not provide shell access.
 ```
+```bash
+# 1. Gitユーザー情報を設定
+git config --global user.email "keita17101042@gmail.com"
+git config --global user.name "KeitaTK"
+
+# 2. リモートURLをSSHに変更
+git remote set-url origin git@github.com:KeitaTK/Mavlink_raspi.git
+
+# 3. SSHエージェントにキーを追加（必要に応じて）
+ssh-add ~/.ssh/id_ed25519_nopass
+
+# 4. 再度コミット・プッシュを試行
+git add .
+git commit -m "commit message"
+git push
+```
+
 
 ### 5. git pullをテスト
 最後に、`git pull` を実行してパスフレーズを求められずに動作するか確認します：
