@@ -51,3 +51,5 @@ cd ~/mavlink/pymavlink
 python setup.py install
 ```
 生成されたMAVLinkライブラリは、 pipを使用してインストールされたものと同じように使用できる。
+
+ここは消しても良い。
