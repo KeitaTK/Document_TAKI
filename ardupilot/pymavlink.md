@@ -4,7 +4,7 @@
 
 Pixhawk 6CとRaspberry Pi 5をUSBケーブルで接続し、Pixhawkから送られてくるMAVLinkデータをRaspberry Piで受信するには、以下の手順で実現できます。
 
-## 1. ハードウェア接続
+## 1. USB接続
 
 - **Pixhawk 6CのUSB Type-Cポート**と**Raspberry Pi 5のUSB-Aポート**を、データ通信対応のUSBケーブルで接続します。
 - Pixhawk 6CはUSB接続時、自動的にシリアルデバイス（例：`/dev/ttyACM0`）としてRaspberry Pi側に認識されます[^4]。
@@ -34,6 +34,19 @@ pip3 install MAVProxy pymavlink
 
 - **Pixhawkのファームウェア設定**
 USB経由のMAVLink通信は通常自動で有効ですが、QGroundControlやMission Plannerで「SERIAL0_PROTOCOL」を「2（MAVLink 2）」に、「SERIAL0_BAUD」を「115200」または「921600」に設定しておくと確実です[^4][^5]。
+
+### telem1で通信するとき
+
+- Pixhawk TELEM1          ラズパイ5
+Pin 2 (TX) -----------> GPIO 15 (Pin 10)
+Pin 3 (RX) <----------- GPIO 14 (Pin 8)
+Pin 4 (CTS) <---------- GPIO 16 (Pin 36) ※フロー制御用
+Pin 5 (RTS) ----------> GPIO 17 (Pin 11) ※フロー制御用
+Pin 6 (GND) ----------- Pin 14 (GND)
+
+フロー制御はなしでもよい
+なしの時はボーレートを上げすぎない
+
 
 
 ## 4. Raspberry PiでMAVLinkデータを受信
