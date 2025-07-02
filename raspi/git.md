@@ -7,6 +7,21 @@ git commit -m "commit message"
 git push
 ```
 
+### 普段のgit cloneの初回設定
+
+まず,URLを取得して
+
+```bash
+git clone 
+```
+する。次にこのURLを使って
+git remote set-url origin git@github.com:KeitaTK/リポジトリ名
+
+```bash
+git remote set-url origin git@github.com:KeitaTK/
+```
+に変換する。
+
 
 
 ## 手順：パスフレーズなしのSSH鍵を作成
