@@ -1,114 +1,133 @@
-# WSL2 Ubuntuに学内プロキシ (ufproxy.b.cii.u-fukui.ac.jp:8080) を設定する手順
+# 福井大学文京キャンパス用プロキシ設定ガイド
 
-## 1. シェル全体にプロキシ設定する
+福井大学のWSL2 Ubuntu環境でArduPilot開発やその他の作業を行う際の、文京キャンパス専用プロキシ設定手順です。
 
-Ubuntuの**環境変数**として、すべてのコマンドにプロキシを適用します。
+***
 
-### 手順
+## プロキシサーバー情報（文京キャンパス）
 
-```bash
-nano ~/.bashrc
-```
+プロキシサーバー: ufproxy.b.cii.u-fukui.ac.jp  
+ポート: 8080  
 
-末尾に次を追記：
-```
-function proxy_on() {
-  export http_proxy="http://ufproxy.b.cii.u-fukui.ac.jp:8080/"
-  export https_proxy="http://ufproxy.b.cii.u-fukui.ac.jp:8080/"
-  export ftp_proxy="http://ufproxy.b.cii.u-fukui.ac.jp:8080/"
-  export no_proxy="localhost,127.0.0.1,::1"
+除外設定: 学内サーバー（`.u-fukui.ac.jp`ドメイン）とローカルアドレス（`localhost`, `127.0.0.1`, `::1`）は直接接続します。
 
-  # Git
-  git config --global http.proxy $http_proxy
-  git config --global https.proxy $https_proxy
+***
 
-  # pip
-  mkdir -p ~/.config/pip
-  cat > ~/.config/pip/pip.conf <<EOF
-[global]
-proxy = $http_proxy
-EOF
+## ~/.bashrcへの関数追加手順
 
-  # apt
-  sudo bash -c "cat > /etc/apt/apt.conf.d/95proxies <<EOF
-Acquire::http::Proxy \"$http_proxy\";
-Acquire::https::Proxy \"$https_proxy\";
-EOF"
+1. ターミナルで以下を実行し、`~/.bashrc`を開きます。
 
-  # wget
-  cat > ~/.wgetrc <<EOF
-use_proxy = on
-http_proxy = $http_proxy
-https_proxy = $https_proxy
-EOF
+   ```bash
+   nano ~/.bashrc
+   ```
 
-  # curl
-  echo "proxy = \"$http_proxy\"" > ~/.curlrc
+2. ファイル末尾に以下の内容を追加します。
 
-  # conda（使っていれば）
-  cat > ~/.condarc <<EOF
-proxy_servers:
-  http: $http_proxy
-  https: $https_proxy
-EOF
+   ```bash
+   # === 福井大学文京キャンパス プロキシ設定関数 ===
 
-  echo "[proxy_on] プロキシを有効にしました。"
-}
+   function proxy_on() {
+     # 文京キャンパス公式プロキシ設定
+     export HTTP_PROXY="http://ufproxy.b.cii.u-fukui.ac.jp:8080/"
+     export HTTPS_PROXY="http://ufproxy.b.cii.u-fukui.ac.jp:8080/"
+     export FTP_PROXY="http://ufproxy.b.cii.u-fukui.ac.jp:8080/"
+     export http_proxy="http://ufproxy.b.cii.u-fukui.ac.jp:8080/"
+     export https_proxy="http://ufproxy.b.cii.u-fukui.ac.jp:8080/"
+     export ftp_proxy="http://ufproxy.b.cii.u-fukui.ac.jp:8080/"
+     export no_proxy=".u-fukui.ac.jp,localhost,127.0.0.1,::1"
 
-function proxy_off() {
-  unset http_proxy https_proxy ftp_proxy no_proxy
+     # Gitのプロキシ設定
+     git config --global http.proxy "$http_proxy" 2>/dev/null
+     git config --global https.proxy "$https_proxy" 2>/dev/null
 
-  # Git
-  git config --global --unset http.proxy
-  git config --global --unset https.proxy
+     # pipのプロキシ設定
+     mkdir -p ~/.config/pip
+     cat > ~/.config/pip/pip.conf  /etc/apt/apt.conf.d/95proxies  ~/.wgetrc  ~/.curlrc  ~/.condarc /dev/null
+     npm config set https-proxy "$https_proxy" 2>/dev/null
 
-  # pip
-  rm -f ~/.config/pip/pip.conf
+     echo "✅ [proxy_on] 文京キャンパスプロキシを有効化しました"
+     echo "   プロキシ: ufproxy.b.cii.u-fukui.ac.jp:8080"
+   }
 
-  # apt
-  sudo rm -f /etc/apt/apt.conf.d/95proxies
+   function proxy_off() {
+     unset HTTP_PROXY HTTPS_PROXY FTP_PROXY
+     unset http_proxy https_proxy ftp_proxy no_proxy
 
-  # wget
-  rm -f ~/.wgetrc
+     git config --global --unset http.proxy 2>/dev/null
+     git config --global --unset https.proxy 2>/dev/null
 
-  # curl
-  rm -f ~/.curlrc
+     rm -f ~/.config/pip/pip.conf
+     sudo rm -f /etc/apt/apt.conf.d/95proxies
+     rm -f ~/.wgetrc ~/.curlrc ~/.condarc
 
-  # conda
-  rm -f ~/.condarc
+     npm config delete proxy 2>/dev/null
+     npm config delete https-proxy 2>/dev/null
 
-  echo "[proxy_off] プロキシを無効にしました。"
-}
+     echo "🚫 [proxy_off] プロキシを無効化しました"
+   }
 
+   function proxy_status() {
+     if [ -n "$http_proxy" ]; then
+       echo "✅ プロキシが有効: $http_proxy"
+       echo "除外設定: $no_proxy"
+       echo ""
+       echo "=== 設定状況 ==="
+       echo "Git HTTP: $(git config --global --get http.proxy 2>/dev/null || echo '未設定')"
+       echo "pip設定: $([ -f ~/.config/pip/pip.conf ] && echo '設定済み' || echo '未設定')"
+       echo "apt設定: $([ -f /etc/apt/apt.conf.d/95proxies ] && echo '設定済み' || echo '未設定')"
+     else
+       echo "🚫 プロキシが無効"
+     fi
+   }
+   ```
 
-```
+3. 保存して終了: `Ctrl+O` → Enter → `Ctrl+X`
 
-追記後、すぐ反映させるには：
+4. 変更を反映:
 
-```bash
-source ~/.bashrc
-```
-使い方
-```
-source ~/.bashrc    # 反映（初回だけ）
-proxy_on            # プロキシON
-proxy_off           # プロキシOFF
-```
+   ```bash
+   source ~/.bashrc
+   ```
 
-# （補說）認証付きプロキシの場合
+***
 
-もしプロキシがユーザ名・パスワードで認証を要求する場合、URLの形式を次のようにします。
+## 基本的な使用方法
 
-```
-http://<username>:<password>@ufproxy.b.cii.u-fukui.ac.jp:8080/
-```
+- **プロキシ有効化（文京キャンパス）**  
+  `proxy_on`
+- **プロキシ無効化**  
+  `proxy_off`
+- **設定状況確認**  
+  `proxy_status`
 
-※ パスワードに `@` や `:` など特殊文字が含まれる場合はエスケープ（URLエンコード）が必要です。
+***
 
-# 🚀 これでできること
+## トラブルシューティング
 
-- `sudo apt update`が通る
-- `pip install`が通る
-- `curl`や`wget`もそのまま使える
-- 毎回手動でプロキシ設定しなくてよい
+1. **プロキシ設定後も接続できない**  
+   ```bash
+   proxy_status
+   curl -v --proxy http://ufproxy.b.cii.u-fukui.ac.jp:8080 http://www.google.com
+   ```
 
+2. **学内サーバーへの接続がプロキシ経由になる**  
+   ```bash
+   echo $no_proxy
+   curl -I http://www.u-fukui.ac.jp
+   ```
+
+3. **apt update時にエラー**  
+   ```bash
+   cat /etc/apt/apt.conf.d/95proxies
+   proxy_off; proxy_on; sudo apt update
+   ```
+
+4. **Git操作でタイムアウト**  
+   ```bash
+   git config --global --get http.proxy
+   git config --global http.proxy "http://ufproxy.b.cii.u-fukui.ac.jp:8080"
+   ```
+
+***
+
+このガイドに従うことで、福井大学文京キャンパス環境下でWSL2 Ubuntuを使用した開発作業がスムーズに行えます。問題があれば、`proxy_status`で設定状況を確認してください。
