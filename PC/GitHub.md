@@ -87,7 +87,8 @@ git pull origin main
 2. **リモートの変更をローカルに取り込む（マージ）**
 
 ```bash
-git pull origin main
+git fetch origin
+git merge --no-ff origin/main
 ```
 
 3. **コンフリクト箇所を修正**
@@ -116,6 +117,3 @@ git push origin main
 - **コンフリクト時は`git pull`でマージし、競合箇所を修正してからpush**  
 - SSHキー連携を使うとパスフレーズ入力が不要に  
 - 各環境でGitの基本コマンドを覚えておくと効率化可能
-- テスト
-- 適当に編集
-- コンフリクト解消
