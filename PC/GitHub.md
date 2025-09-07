@@ -78,9 +78,41 @@ git pull origin main
 
 ---
 
+## コンフリクト（競合）が発生した場合の対処法
+
+### 例：GitHubのmainとローカルのmainで内容が異なり、push/pull時にエラーが出る場合
+
+1. **エラー内容を確認**
+	- 例: `error: failed to push some refs to ...` など
+2. **リモートの変更をローカルに取り込む（マージ）**
+
+```bash
+git pull origin main
+```
+
+3. **コンフリクト箇所を修正**
+	- ファイル内に`<<<<<<<`, `=======`, `>>>>>>>`の記号が現れるので、どちらの内容を残すか編集
+	- 編集後、保存
+
+4. **修正内容をコミット**
+
+```bash
+git add .
+git commit -m "コンフリクト解消"
+```
+
+5. **再度push**
+
+```bash
+git push origin main
+```
+
+---
+
 ## まとめ
 
 - VSCodeで`git init`→`remote add`→`push`  
 - Raspberry Piで`clone`→`pull`  
+- **コンフリクト時は`git pull`でマージし、競合箇所を修正してからpush**  
 - SSHキー連携を使うとパスフレーズ入力が不要に  
 - 各環境でGitの基本コマンドを覚えておくと効率化可能
