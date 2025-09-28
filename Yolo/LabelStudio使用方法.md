@@ -14,13 +14,16 @@ docker pull heartexlabs/label-studio:latest
 docker run -d `
   --name label-studio `
   -p 8080:8080 `
+  -e DATA_UPLOAD_MAX_MEMORY_SIZE=524288000 `
+  -e FILE_UPLOAD_MAX_MEMORY_SIZE=524288000 `
+  -e DATA_UPLOAD_MAX_NUMBER_FILES=2000 `
   -v ${PWD}\label-studio-data:/label-studio/data `
   heartexlabs/label-studio:latest
 ```
 
 **3. 初回セットアップ＆アノテーション**
 
-1. ブラウザで http://localhost:8080 にアクセス
+1. ブラウザ(chromeだとエラーになった)で http://localhost:8080 にアクセス
 2. 管理者アカウントを作成
 3. 「Create Project」→プロジェクト名／説明を設定→データをインポート
 4. 「Label」画面で矩形ツールを選択→画像上でドラッグ→「Submit」をクリック
