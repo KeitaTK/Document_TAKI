@@ -13,17 +13,29 @@ docker pull heartexlabs/label-studio:latest
 ```powershell
 docker run -d `
   --name label-studio `
-  -p 8080:8080 `
+  -p 9000:8080 `
   -e DATA_UPLOAD_MAX_MEMORY_SIZE=524288000 `
   -e FILE_UPLOAD_MAX_MEMORY_SIZE=524288000 `
   -e DATA_UPLOAD_MAX_NUMBER_FILES=2000 `
   -v ${PWD}\label-studio-data:/label-studio/data `
   heartexlabs/label-studio:latest
 ```
+※この設定で、同じネットワーク内の他PCから `http://<DockerホストのIPアドレス>:9000` でアクセス可能です。
+ファイアウォールで9000番ポートの許可も必要です。
+
+---
+
+**コピー用アクセスURL**
+
+```
+http://192.168.11.14:9000
+```
+
+---
 
 **3. 初回セットアップ＆アノテーション**
 
-1. ブラウザ(chromeだとエラーになった)で http://localhost:8080 にアクセス
+1. ブラウザ(chromeだとエラーになった)で `http://<DockerホストのIPアドレス>:9000` にアクセス
 2. 管理者アカウントを作成
 3. 「Create Project」→プロジェクト名／説明を設定→データをインポート
 4. 「Label」画面で矩形ツールを選択→画像上でドラッグ→「Submit」をクリック
@@ -40,5 +52,5 @@ docker stop label-studio
 docker start label-studio
 ```
 
-再起動後、再び http://localhost:8080 へアクセスして続きのアノテーションを行えます。
+再起動後、再び `http://<DockerホストのIPアドレス>:9000` へアクセスして続きのアノテーションを行えます。
 
