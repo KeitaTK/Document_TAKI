@@ -1,3 +1,6 @@
+https://note.com/amatz/n/nfd6ff5118c78
+
+
 ## GPUを使うときの起動コマンド
 
 - Windowsのgit bashdで起動する。
