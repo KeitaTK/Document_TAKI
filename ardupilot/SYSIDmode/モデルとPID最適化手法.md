@@ -1,10 +1,23 @@
 # ArduPilot sysidmode を使ったモデルとPID最適化
 
+## 想定する制御と制御対象のモデル
+
+本資料では、以下のようなフィードバック制御系を想定している。
+
+![PID制御系モデル](../picture/PIDmodel.jpg)
+
+図1: 制御系のブロック図
+出典: https://jp.mathworks.com/discovery/pid-control.html
+
+本資料では、まずSYSIDモードで記録した入力信号と応答データを用いて制御対象のモデル化を行い、そのモデルを使ってPIDゲインの最適化を行うという順番で検討している。
+その手法として、以下の2つを紹介する。
+
 ## 手法1：2階遅れシステム + 最小二乗最適化
 
 ### 基本原理
 
-ドローンの姿勢制御系を2階遅れシステム図1 $\frac{\omega_n^2}{s^2 + 2\zeta\omega_n s + \omega_n^2}$ でモデル化し、実測データとモデルの誤差を最小二乗法で最小化することでPIDゲインを決定する。
+ドローンの姿勢制御系を2階遅れシステム図2 $\frac{\omega_n^2}{s^2 + 2\zeta\omega_n s + \omega_n^2}$ でモデル化し、実測データとモデルの誤差を最小二乗法で最小化することでPIDゲインを決定する。
+これは時間領域でのシステム同定と最小二乗法を用いた最適化を組み合わせた手法である。
 
 **2階遅れシステム：**
 
@@ -28,24 +41,23 @@
   ATC_RAT_RLL_P/I/D に書込み
 ```
 
+<img src="../picture/quadraticlag.png" alt="二次遅れ要素の模式図（画像: ardupilot\picture\quadraticlag.png）" style="width:48%;" />
+
+図2: 二次遅れ要素の模式図  
+出典: 制御工学の基礎二次遅れ要素とヘビサイドの展開定理
+https://blog-firststep.com/transientsecond/
 
 ### 特徴
 
-<img src="../picture/quadraticlag.png" alt="二次遅れ要素の模式図（画像: ardupilot\picture\quadraticlag.png）" style="width:48%;" />
-
-図１: 二次遅れ要素の模式図  
-出典: 制御工学の基礎二次遅れ要素とヘビサイドの展開定理 — https://blog-firststep.com/transientsecond/
-
-
 **2階遅れシステム：**
 - 物理的妥当性：慣性モーメントによる2階微分方程式
-- パラメータの明確性：ωn（応答速度）、ζ（振動の程度）が直感的
+- パラメーターの明確性：ωn（応答速度）、ζ（振動の程度）が直感的
 - ArduPilot適合性：カスケード制御構造に最適
 
 **最小二乗最適化の利点：**
 
 - 凸最適化に近い問題で収束が速い
-- パラメータ数が少ない（ωn, ζの2個）
+- パラメーター数が少ない（ωn, ζの2個）
 
 ***
 
@@ -63,6 +75,9 @@
 [周波数領域変換]
   FFT(高速フーリエ変換)
        ↓
+<div align="center">
+  <img src="../picture/Bode-Diagram.jpg" alt="ボード線図（画像: ardupilot\picture\Bode-Diagram.jpg）" style="width:48%;" />
+</div>
 [周波数応答計算]
   Bode線図作成（振幅・位相特性）
        ↓
@@ -87,6 +102,11 @@
        ↓
 [ArduPilotパラメータ設定]
 ```
+<img src="../picture/Bode-Diagram.jpg" alt="ボード線図（画像: ardupilot\picture\Bode-Diagram.jpg）" style="width:48%;" />
+
+図3: ボード線図 
+出典: アイアール技術者教育研究所:周波数応答・周波数伝達関数を解説！ボード線図って何？
+https://blog-firststep.com/transientsecond/
 
 
 ### 特徴
@@ -96,6 +116,7 @@
 - 導入コストが高い
 - 計算量が多い
 
+***
 
 ## 数学的定式化の違い
 
@@ -151,7 +172,7 @@ $$
 
 ## 2階遅れシステム + 最小二乗最適化
 
-### 実機向けパラメータ調整
+### 実機向けパラメーター調整
 
 - 適用場面：実運用機の迅速なPIDチューニング。
 - 利点：実装が簡単、計算負荷が小さい。短時間で十分な性能が得られる。  
