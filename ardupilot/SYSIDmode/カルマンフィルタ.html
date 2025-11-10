@@ -88,8 +88,8 @@
 </ul>
 <hr>
 <h2 id="カルマンゲインの調整">カルマンゲインの調整 </h2>
-<p>カルマンゲインは、基本的にはセンサのノイズの共分散行列をもとに調整されるが、実際にはシステムの特性や動作環境に応じて微調整することが多い。<br>
-カルマンゲイン <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">K_k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> が推定精度において重要な役割を果たす。</p>
+<p>カルマンゲインは、基本的にはセンサのノイズの共分散行列をもとに調整される。<br>
+ノイズの大きさをパラメータとして設定することで、カルマンゲインの値が変化し、推定の特性が変わる。</p>
 <h3 id="調整の仕組み"><strong>調整の仕組み</strong> </h3>
 <div style="border:2px solid #4A90E2; border-radius:8px; padding:16px; background:#f7faff;">
 <p><span style="font-size:1.1em; color:#1565c0; font-weight:bold;">カルマンゲイン調整のポイント</span></p>
