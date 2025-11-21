@@ -19,7 +19,7 @@
 - **Place each input file into a separate band**: ✗ チェックなし（重要）
 - **出力ファイル**: .vrt
 
-	<img src="picture/rasutareiya.png" alt="VRT作成画面" style="width:50%;" />
+	<img src="picture/kasourasta.png" alt="GeoTIFFエクスポート設定（ピラミッド）" style="width:50%;" />
 
 **結果**: 1つのバンドを持つ統合VRTが作成され、座標系とメタデータが完全に保持されました。
 
@@ -48,7 +48,9 @@
 - **圧縮**: オプション（必要に応じてDEFLATE + ZLEVEL=9推奨）
 - **ピラミッド**: 不要
 
-	<img src="picture/kasourasta.png" alt="GeoTIFFエクスポート設定（ピラミッド）" style="width:50%;" />
+
+	<img src="picture/rasutareiya.png" alt="VRT作成画面" style="width:50%;" />
 
 ***
+
 
